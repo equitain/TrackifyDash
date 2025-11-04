@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trackify Admin Login</title>
+  <style>
+    :root{--primary:#2e3b4e;--muted:#95a5a6;--accent:#3498db}
+    body{margin:0;font-family:Inter,Segoe UI,Arial;height:100vh;background:#f5f6f8;display:flex;align-items:center;justify-content:center}
+    .login-container{width:360px;background:#fff;padding:28px;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,0.08);text-align:left}
+    .login-container h2{margin:0 0 12px;color:var(--primary)}
+    input{width:100%;padding:8px;border-radius:6px;border:1px solid #ddd;box-sizing:border-box;margin-bottom:12px}
+    .btn-primary{background:var(--primary);color:#fff;border:none;padding:10px 12px;border-radius:6px;cursor:pointer}
+    .btn-secondary{background:#fff;border:1px solid #ddd;padding:8px;border-radius:6px;cursor:pointer}
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <h2>Admin Login</h2>
+    <input id="loginUsername" type="text" placeholder="Username">
+    <input id="loginPassword" type="password" placeholder="Password">
+    <div style="display:flex;justify-content:space-between">
+      <button id="loginBtn" class="btn-primary">Login</button>
+      <button id="loginHelp" class="btn-secondary">Help</button>
+    </div>
+  </div>
+
+  <script type="module">
+    document.addEventListener("DOMContentLoaded", () => {
+      import("https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js").then(({initializeApp}) => {
+        import("https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js").then(FB => {
+          const firebaseConfig = {
+            apiKey: "AIzaSyAqWEjPKI1mHEnw2zmClSblgTTGI1GY-Ao",
+            authDomain: "myfirstfirebase-d549e.firebaseapp.com",
+            projectId: "myfirstfirebase-d549e",
+            storageBucket: "myfirstfirebase-d549e.appspot.com",
+            messagingSenderId: "623028546718",
+            appId: "1:623028546718:web:0f6d80318e531cfa321f8f"
+          };
+          const app = initializeApp(firebaseConfig);
+          const db = FB.getFirestore(app);
+
+          const loginBtn = document.getElementById("loginBtn");
+          loginBtn.addEventListener("click", async () => {
+            const u = document.getElementById("loginUsername").value.trim();
+            const p = document.getElementById("loginPassword").value.trim();
+            if(!u || !p){ alert("Enter username and password."); return; }
+            try {
+              const adminRef = FB.doc(db,"admin","admin");
+              const snap = await FB.getDoc(adminRef);
+              if(!snap.exists()){ alert("Admin doc missing."); return; }
+              const data = snap.data();
+              if(u === data.username && p === data.password){
+                localStorage.setItem("trackifyAdmin","true");
+                window.location.href = "dashboard.html";
+              } else { alert("Invalid username or password."); }
+            } catch(e){ console.error(e); alert("Login error."); }
+          });
+
+          if(localStorage.getItem("trackifyAdmin")==="true") window.location.href="dashboard.html";
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
