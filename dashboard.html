@@ -1,297 +1,727 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Trackify Admin Dashboard</title>
-<style>
-:root{--primary:#2e3b4e;--muted:#95a5a6;--accent:#3498db}
-body{margin:0;font-family:Inter,Segoe UI,Arial;height:100vh;background:#f5f6f8}
-.dashboard{display:flex;height:100vh}
-.sidebar{width:240px;background:var(--primary);color:#fff;padding:18px;box-sizing:border-box}
-.sidebar h3{text-align:center;margin:0 0 16px}
-.sidebar button{display:block;width:100%;text-align:left;padding:10px;border-radius:6px;border:none;margin-bottom:8px;background:#34495e;color:#fff;cursor:pointer}
-.sidebar button.active{background:#3d566e}
-.main{flex:1;padding:20px;overflow:auto}
-.search-row{display:flex;justify-content:flex-end;margin-bottom:10px}
-.search-row input{width:300px;padding:8px}
-table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.06)}
-th,td{padding:10px;border-bottom:1px solid #eee;text-align:left}
-thead th{background:var(--primary);color:#fff;position:sticky;top:0}
-tr:hover td{background:#fbfbfb}
-.action-btn{padding:6px 8px;border-radius:6px;border:none;color:#fff;margin-right:6px;cursor:pointer}
-.editBtn{background:#3498db}.saveBtn{background:#2ecc71}.cancelBtn{background:#95a5a6}
-.deleteBtn{background:#e74c3c}.resetBtn{background:#9b59b6}.acceptBtn{background:#27ae60}.rejectBtn{background:#d35400}
-.bottom-panel{position:fixed;left:260px;right:20px;bottom:14px;background:#fff;padding:10px;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,0.06);display:flex;justify-content:space-between;align-items:center}
-.small{font-size:13px;color:#666}
-.group-card{background:#fff;border-radius:8px;padding:12px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
-.group-head{display:flex;justify-content:space-between;align-items:center}
-.member-list{margin-top:8px;padding-left:14px;display:none}
-.member-item{display:flex;justify-content:space-between;align-items:center;padding:4px 0}
-.add-member-row{margin-top:8px;display:flex;gap:8px}
-input, select{padding:6px;border-radius:6px;border:1px solid #ddd;box-sizing:border-box}
-button{cursor:pointer}
-a{color:var(--accent)}
-</style>
+<!-- saved from url=(0049)file:///C:/Users/emagl/Desktop/AdminDash/try.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Trackify Admin Dashboard</title>
+  <style>
+    :root{--primary:#2e3b4e;--muted:#95a5a6;--accent:#3498db}
+    body{margin:0;font-family:Inter,Segoe UI,Arial;height:100vh;background:#f5f6f8}
+    /* Top-right admin icon */
+    .topbar {position:fixed; right:16px; top:12px; z-index:10}
+    .admin-icon {background:var(--primary); color:#fff; border-radius:8px; padding:8px; cursor:pointer; border:none}
+    /* Login */
+    .login-container{width:360px;margin:80px auto;background:#fff;padding:28px;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,0.08);text-align:left}
+    .login-container h2{margin:0 0 12px;color:var(--primary)}
+    .login-row{display:flex;gap:8px}
+    input, select, textarea{width:100%;padding:8px;border-radius:6px;border:1px solid #ddd;box-sizing:border-box}
+    button{cursor:pointer}
+    .btn-primary{background:var(--primary);color:#fff;border:none;padding:10px 12px;border-radius:6px}
+    /* Dashboard */
+    .dashboard{display:flex;height:100vh}
+    .sidebar{width:240px;background:var(--primary);color:#fff;padding:18px;box-sizing:border-box}
+    .sidebar h3{text-align:center;margin:0 0 16px}
+    .sidebar button{display:block;width:100%;text-align:left;padding:10px;border-radius:6px;border:none;margin-bottom:8px;background:#34495e;color:#fff}
+    .sidebar button.active{background:#3d566e}
+    .main{flex:1;padding:20px;overflow:auto}
+    .search-row{display:flex;justify-content:flex-end;margin-bottom:10px}
+    .search-row input{width:300px;padding:8px}
+    table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.06)}
+    th,td{padding:10px;border-bottom:1px solid #eee;text-align:left}
+    thead th{background:var(--primary);color:#fff;position:sticky;top:0}
+    tr:hover td{background:#fbfbfb}
+    /* action buttons */
+    .action-btn{padding:6px 8px;border-radius:6px;border:none;color:#fff;margin-right:6px;cursor:pointer}
+    .editBtn{background:#3498db}.saveBtn{background:#2ecc71}.cancelBtn{background:#95a5a6}
+    .deleteBtn{background:#e74c3c}.resetBtn{background:#9b59b6}.acceptBtn{background:#27ae60}.rejectBtn{background:#d35400}
+    td[contenteditable="true"]{background:#fff8dc}
+    /* groups collapsible */
+    .group-card{background:#fff;border-radius:8px;padding:12px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+    .group-head{display:flex;justify-content:space-between;align-items:center}
+    .member-list{margin-top:8px;padding-left:14px}
+    .member-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0}
+    .bottom-panel{position:fixed;left:260px;right:20px;bottom:14px;background:#fff;padding:10px;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,0.06);display:flex;justify-content:space-between;align-items:center}
+    .small{font-size:13px;color:#666}
+    /* modal */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:50}
+    .modal{background:#fff;padding:16px;border-radius:8px;width:420px;box-shadow:0 8px 32px rgba(0,0,0,0.12)}
+    .viewBtn {
+  background: #3498db;
+}
+.member-list {
+  margin-top: 10px;
+  padding: 10px;
+  border-left: 3px solid #3498db;
+  background: #f9f9f9;
+  border-radius: 6px;
+}
+.member-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+}
+  </style>
 </head>
 <body>
-<div class="dashboard">
-<aside class="sidebar">
-<h3>Admin Panel</h3>
-<button data-collection="users" class="active">Users</button>
-<button data-collection="groups">Groups</button>
-<button data-collection="repairshops">Repairshops</button>
-<button data-collection="ShopApplication">Shop Applications</button>
-<button id="logoutBtn" style="background:#c0392b">Logout</button>
-</aside>
+  <!-- Admin settings icon -->
+  <div class="topbar">
+    <button id="adminSettingsBtn" title="Admin settings" class="admin-icon">⚙️</button>
+  </div>
 
-<main class="main">
-<h2 id="sectionTitle">Users</h2>
-<div class="search-row">
-<input id="searchInput" placeholder="Search...">
-</div>
-<div id="tableContainer"></div>
-</main>
+  <!-- Login screen -->
+  <div id="loginView" class="login-container" style="display: none;">
+    <h2>Admin Login</h2>
+    <label>Username</label>
+    <input id="loginUsername" type="text" placeholder="username">
+    <label style="margin-top:8px">Password</label>
+    <input id="loginPassword" type="password" placeholder="password">
+    <div style="margin-top:12px;display:flex;justify-content:space-between">
+      <button id="loginBtn" class="btn-primary">Login</button>
+      <button id="loginHelp" style="background:#fff;border:1px solid #ddd;padding:8px;border-radius:6px">Help</button>
+    </div>
+  </div>
 
-<div class="bottom-panel">
-<div>
-<button id="backupBtn" class="btn-primary">Backup All (exclude admin)</button>
-<input id="restoreFile" type="file" accept="application/json" style="display:none">
-<button id="restoreBtn" style="margin-left:10px;background:#d35400;color:#fff;border:none;padding:8px;border-radius:6px">Restore from JSON</button>
-</div>
-<div class="small">Destructive restore requires admin password confirmation.</div>
-</div>
-</div>
+  <!-- Dashboard -->
+  <div id="dashboard" style="" class="dashboard">
+    <aside class="sidebar">
+      <h3>Admin Panel</h3>
+      <button data-collection="users" class="">Users</button>
+      <button data-collection="groups" class="">Groups</button>
+      <button data-collection="repairshops" class="">Repairshops</button>
+      <button data-collection="ShopApplication" class="active">Shop Applications</button>
+      <button id="logoutBtn" style="background:#c0392b">Logout</button>
+    </aside>
 
-<div id="modalRoot" style="display:none"></div>
+    <main class="main">
+      <h2 id="sectionTitle">Shop Applications</h2>
+      <div class="search-row">
+        <input id="searchInput" placeholder="Search...">
+      </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+      <!-- data table container -->
+      <div id="tableContainer"><table><thead><tr><th>Address</th><th>timestamp</th><th>Contact</th><th>BusinessPermitURL</th><th>Services</th><th>ShopName</th><th>userId</th><th>FullName</th><th>ShopImageURL</th><th>Actions</th></tr></thead><tbody><tr data-docid="NOmdhyO8KTe7Yw9zirCy" data-searchable=" asdasdasdasd 8/19/2025, 10:20:53 PM 123123123123123 https://firebasestorage.googleapis.com/v0/b/myfirstfirebase-d549e.appspot.com/o/shop_applications%2Fb9db5b7a-1963-4eed-acf8-8be7c2901db9.jpg?alt=media&amp;token=273e50b8-e649-4526-97fd-b90d816de837 Tow john&#39;s BXTSox42v4PEmP4J3AAsdJgUZSj1 asdasd https://firebasestorage.googleapis.com/v0/b/myfirstfirebase-d549e.appspot.com/o/shop_applications%2Fb8bbf884-1fa8-4f8d-9abb-f50fef3368ad.jpg?alt=media&amp;token=815590ba-775d-402f-90e1-b315de4b25cc"><td contenteditable="false">asdasdasdasd</td><td contenteditable="false">8/19/2025, 10:20:53 PM</td><td contenteditable="false">123123123123123</td><td contenteditable="false">https://firebasestorage.googleapis.com/v0/b/myfirstfirebase-d549e.appspot.com/o/shop_applications%2Fb9db5b7a-1963-4eed-acf8-8be7c2901db9.jpg?alt=media&amp;token=273e50b8-e649-4526-97fd-b90d816de837</td><td contenteditable="false">Tow</td><td contenteditable="false">john's</td><td contenteditable="false">BXTSox42v4PEmP4J3AAsdJgUZSj1</td><td contenteditable="false">asdasd</td><td contenteditable="false">https://firebasestorage.googleapis.com/v0/b/myfirstfirebase-d549e.appspot.com/o/shop_applications%2Fb8bbf884-1fa8-4f8d-9abb-f50fef3368ad.jpg?alt=media&amp;token=815590ba-775d-402f-90e1-b315de4b25cc</td><td><button class="action-btn acceptBtn">Accept</button><button class="action-btn rejectBtn">Reject</button></td></tr></tbody></table></div>
+    </main>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAqWEjPKI1mHEnw2zmClSblgTTGI1GY-Ao",
-  authDomain: "myfirstfirebase-d549e.firebaseapp.com",
-  projectId: "myfirstfirebase-d549e",
-  storageBucket: "myfirstfirebase-d549e.appspot.com",
-  messagingSenderId: "623028546718",
-  appId: "1:623028546718:web:0f6d80318e531cfa321f8f"
-};
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+    <!-- bottom panel: backup / restore -->
+    <div class="bottom-panel">
+      <div>
+        <button id="backupBtn" class="btn-primary">Backup All (exclude admin)</button>
+        <input id="restoreFile" type="file" accept="application/json" style="display:none">
+        <button id="restoreBtn" style="margin-left:10px;background:#d35400;color:#fff;border:none;padding:8px;border-radius:6px">Restore from JSON</button>
+      </div>
+      <div class="small">Destructive restore requires admin password confirmation.</div>
+    </div>
+  </div>
 
-if(localStorage.getItem("trackifyAdmin")!=="true") window.location.href="login.html";
+  <!-- Modal holder -->
+  <div id="modalRoot" style="display:none"></div>
 
-const tableContainer = document.getElementById("tableContainer");
-const sectionTitle = document.getElementById("sectionTitle");
-const searchInput = document.getElementById("searchInput");
+  <script type="module">
+    // --------- CONFIG: change these ----------
+    const CLOUD_FN_SEND_EMAIL_URL = "<YOUR_CLOUD_FUNCTION_SEND_EMAIL_URL>"; // e.g. https://us-central1-.../sendEmail
+    const FUNCTION_KEY = "<OPTIONAL_FUNCTION_KEY>"; // optional header secret if your function verifies
+    // ----------------------------------------
 
-let cachedUsers = [];
-let cachedGroups = [];
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+    import {
+      getFirestore, collection, getDocs, doc, getDoc, updateDoc, deleteDoc, addDoc, setDoc
+    } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
-// Logout
-document.getElementById("logoutBtn").addEventListener("click", ()=>{
-localStorage.removeItem("trackifyAdmin");
-window.location.href="login.html";
-});
+    const firebaseConfig = {
+      apiKey: "AIzaSyAqWEjPKI1mHEnw2zmClSblgTTGI1GY-Ao",
+      authDomain: "myfirstfirebase-d549e.firebaseapp.com",
+      projectId: "myfirstfirebase-d549e",
+      storageBucket: "myfirstfirebase-d549e.appspot.com",
+      messagingSenderId: "623028546718",
+      appId: "1:623028546718:web:0f6d80318e531cfa321f8f"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-// ---------------- Preload ----------------
-async function preloadData(){
-  const snapUsers = await getDocs(collection(db,"users"));
-  cachedUsers = snapUsers.docs.map(d=>({id:d.id,...d.data()}));
-  const snapGroups = await getDocs(collection(db,"groups"));
-  cachedGroups = snapGroups.docs.map(d=>({id:d.id,...d.data()}));
-}
+    // UI refs
+    const loginView = document.getElementById("loginView");
+    const dashboard = document.getElementById("dashboard");
+    const sectionTitle = document.getElementById("sectionTitle");
+    const tableContainer = document.getElementById("tableContainer");
+    const searchInput = document.getElementById("searchInput");
+    const adminSettingsBtn = document.getElementById("adminSettingsBtn");
+    const restoreFileInput = document.getElementById("restoreFile");
 
-// ---------------- Utility ----------------
-function isURL(str){ try{ return !!new URL(str);}catch(e){return false;} }
-function displayValue(val){ return isURL(val)? `<a href="${val}" target="_blank">${val}</a>` : val; }
-function fnameFromID(uid){ const u=cachedUsers.find(u=>u.id===uid); return u? u.fname||u.email : uid; }
+    // state
+    let currentCollection = "users";
+    let cachedUsers = []; // [{id, name, ...}]
+    const collectionsList = ["users","groups","repairshops","ShopApplication","admin"];
 
-// ---------- Fixed timestamp ----------
-function humanDate(ts){ 
-    try { 
-        let d;
-        if(ts && ts.seconds !== undefined) {  // Firestore Timestamp
-            d = new Date(ts.seconds * 1000);
+    // Helpers
+    function fmt(v){
+      if(!v && v!==0) return "";
+      if(v && v.seconds) return new Date(v.seconds*1000).toLocaleString();
+      return String(v);
+    }
+
+    function hide(el){ el.style.display='none' }
+    function show(el){ el.style.display='' }
+
+    // -------- Login logic (Firestore-based) --------
+    document.getElementById("loginBtn").addEventListener("click", async ()=>{
+      const u = document.getElementById("loginUsername").value.trim();
+      const p = document.getElementById("loginPassword").value.trim();
+      if(!u || !p){ alert("Enter username and password."); return; }
+      try{
+        const adminRef = doc(db,"admin","admin");
+        const snap = await getDoc(adminRef);
+        if(!snap.exists()){ alert("Admin doc missing in Firestore (admin/admin)."); return; }
+        const data = snap.data();
+        if(u === data.username && p === data.password){
+          hide(loginView); show(dashboard);
+          await preloadUsers(); // for members dropdown
+          loadCollection("users");
         } else {
-            d = new Date(ts);
+          alert("Invalid username or password.");
         }
-        return d.toLocaleString("en-GB", { 
-            day: "2-digit", month: "short", year: "numeric", 
-            hour: "2-digit", minute: "2-digit", second: "2-digit" 
-        });
-    } catch(e) { 
-        return ts; 
-    } 
-}
-
-// ---------------- Load Users ----------------
-async function loadUsers(){
-  await preloadData();
-  tableContainer.innerHTML="";
-  if(cachedUsers.length===0){ tableContainer.innerHTML="<div style='padding:12px'>No users.</div>"; return; }
-  const table = document.createElement("table");
-  const thead = document.createElement("thead");
-  const trh = document.createElement("tr");
-  ["Fname","Email","Group Code","Actions"].forEach(h=>{ const th=document.createElement("th"); th.textContent=h; trh.appendChild(th); });
-  thead.appendChild(trh); table.appendChild(thead);
-  const tbody = document.createElement("tbody");
-  cachedUsers.forEach(u=>{
-    const tr=document.createElement("tr"); tr.dataset.docid=u.id;
-    const tdF=document.createElement("td"); tdF.textContent=u.fname??""; tr.appendChild(tdF);
-    const tdE=document.createElement("td"); tdE.textContent=u.email??""; tr.appendChild(tdE);
-    const group = cachedGroups.find(g=>g.createdBy===u.id);
-    const tdG=document.createElement("td"); tdG.textContent=group?.inviteCode??""; tr.appendChild(tdG);
-    const tdActions=document.createElement("td");
-    const saveBtn=document.createElement("button"); saveBtn.className="action-btn saveBtn"; saveBtn.textContent="Save";
-    const delBtn=document.createElement("button"); delBtn.className="action-btn deleteBtn"; delBtn.textContent="Delete";
-    saveBtn.addEventListener("click", async ()=>{
-      await updateDoc(doc(db,"users",u.id),{fname:tdF.textContent,email:tdE.textContent});
-      alert("Saved!");
-      loadUsers();
+      }catch(e){ console.error(e); alert("Login error. See console."); }
     });
-    delBtn.addEventListener("click", async ()=>{
-      if(confirm("Delete this user?")){ await deleteDoc(doc(db,"users",u.id)); loadUsers(); }
+
+    document.getElementById("logoutBtn").addEventListener("click", ()=>{
+      show(loginView); hide(dashboard);
+      document.getElementById("loginUsername").value="";
+      document.getElementById("loginPassword").value="";
     });
-    tdActions.appendChild(saveBtn); tdActions.appendChild(delBtn);
-    tr.appendChild(tdActions); tbody.appendChild(tr);
-  });
-  table.appendChild(tbody); tableContainer.appendChild(table);
-}
 
-// ---------------- Groups ----------------
-async function loadGroups(){
-  await preloadData();
-  tableContainer.innerHTML="";
-  if(cachedGroups.length===0){ tableContainer.innerHTML="<div style='padding:12px'>No groups.</div>"; return; }
-  const container = document.createElement("div");
-  cachedGroups.forEach(g=>{
-    const card=document.createElement("div"); card.className="group-card";
-    const head=document.createElement("div"); head.className="group-head";
-    const left=document.createElement("div");
-    const groupNameEl=document.createElement("div"); groupNameEl.innerHTML=`<strong>Group: ${g.name||"(no name)"}</strong>`;
-    const leaderEl=document.createElement("div");
-    const leaderName = fnameFromID(g.createdBy);
-    leaderEl.innerHTML=`Leader: <span contenteditable="true">${leaderName}</span>`;
-    left.appendChild(groupNameEl); left.appendChild(leaderEl);
-    const right=document.createElement("div");
-    const saveBtn=document.createElement("button"); saveBtn.className="action-btn saveBtn"; saveBtn.textContent="Save";
-    const delBtn=document.createElement("button"); delBtn.className="action-btn deleteBtn"; delBtn.textContent="Delete";
-    right.appendChild(saveBtn); right.appendChild(delBtn);
-    head.appendChild(left); head.appendChild(right);
-    card.appendChild(head);
+    // --------- Admin settings modal (requires current password) ----------
+    adminSettingsBtn.addEventListener("click", async ()=>{
+      const modal = createModal();
+      modal.innerHTML = `
+        <div class="modal">
+          <h3>Admin Settings</h3>
+          <label>Current password</label>
+          <input id="as_current" type="password" />
+          <label style="margin-top:8px">New username</label>
+          <input id="as_new_user" type="text" />
+          <label style="margin-top:8px">New password</label>
+          <input id="as_new_pass" type="password" />
+          <div style="display:flex;justify-content:flex-end;margin-top:12px">
+            <button id="as_cancel" class="action-btn cancelBtn">Cancel</button>
+            <button id="as_save" class="action-btn saveBtn">Save</button>
+          </div>
+        </div>
+      `;
+      showModal(modal);
 
-    const toggleBtn=document.createElement("button"); toggleBtn.textContent="View Option"; toggleBtn.style.marginTop="8px";
-    card.appendChild(toggleBtn);
-    const memberBox=document.createElement("div"); memberBox.className="member-list";
-    (Array.isArray(g.members)?g.members:[]).forEach(m=>{
-      const memberItem=document.createElement("div"); memberItem.className="member-item";
-      memberItem.textContent=fnameFromID(m);
-      const removeBtn=document.createElement("button"); removeBtn.className="action-btn deleteBtn"; removeBtn.textContent="Remove";
-      removeBtn.addEventListener("click", async ()=>{
-        const newMembers=(Array.isArray(g.members)?g.members:[]).filter(x=>x!==m);
-        await updateDoc(doc(db,"groups",g.id),{members:newMembers});
-        loadGroups();
+      modal.querySelector("#as_cancel").addEventListener("click", ()=> closeModal());
+      modal.querySelector("#as_save").addEventListener("click", async ()=>{
+        const cur = modal.querySelector("#as_current").value.trim();
+        const newUser = modal.querySelector("#as_new_user").value.trim();
+        const newPass = modal.querySelector("#as_new_pass").value.trim();
+        if(!cur){ alert("You must enter current password to change credentials."); return; }
+        try{
+          const adminRef = doc(db,"admin","admin");
+          const snap = await getDoc(adminRef);
+          if(!snap.exists()){ alert("Admin doc missing"); return; }
+          const data = snap.data();
+          if(cur !== data.password){ alert("Current password incorrect."); return; }
+          const updates = {};
+          if(newUser) updates.username = newUser;
+          if(newPass) updates.password = newPass;
+          if(Object.keys(updates).length===0){ alert("Nothing to change."); return; }
+          await setDoc(adminRef, {...data, ...updates});
+          alert("Admin credentials updated.");
+          closeModal();
+        }catch(e){ console.error(e); alert("Error updating admin."); }
       });
-      memberItem.appendChild(removeBtn); memberBox.appendChild(memberItem);
     });
-    const addRow=document.createElement("div"); addRow.className="add-member-row";
-    const select=document.createElement("select");
-    cachedUsers.forEach(u=>{ const opt=document.createElement("option"); opt.value=u.id; opt.textContent=u.fname||u.email; select.appendChild(opt); });
-    const addBtn=document.createElement("button"); addBtn.className="action-btn saveBtn"; addBtn.textContent="Add";
-    addBtn.addEventListener("click", async ()=>{
-      const newMemberId=select.value;
-      const newMembers=[...(Array.isArray(g.members)?g.members:[]), newMemberId];
-      await updateDoc(doc(db,"groups",g.id),{members:newMembers});
-      loadGroups();
-    });
-    addRow.appendChild(select); addRow.appendChild(addBtn);
-    memberBox.appendChild(addRow);
-    card.appendChild(memberBox);
-    toggleBtn.addEventListener("click", ()=>{ memberBox.style.display=memberBox.style.display==="none"?"block":"none"; });
 
-    saveBtn.addEventListener("click", async ()=>{
-      const leaderValue=head.querySelector("span").textContent.trim();
-      const leaderObj=cachedUsers.find(u=>u.fname===leaderValue||u.email===leaderValue);
-      await updateDoc(doc(db,"groups",g.id),{createdBy:leaderObj?leaderObj.id:g.createdBy});
-      alert("Group saved!");
+    // -------- Preload users (for group member add dropdown) ----------
+    async function preloadUsers(){
+      try{
+        const snap = await getDocs(collection(db,"users"));
+        cachedUsers = [];
+        snap.forEach(s => cachedUsers.push({ id: s.id, ...s.data() }));
+      } catch(e){ console.error("preloadUsers",e); cachedUsers=[]; }
+    }
+
+    // ---------- Load collection general router ----------
+    document.querySelectorAll(".sidebar button[data-collection]").forEach(btn=>{
+      btn.addEventListener("click", ()=> {
+        document.querySelectorAll(".sidebar button").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+        const col = btn.getAttribute("data-collection");
+        loadCollection(col);
+      });
     });
-    delBtn.addEventListener("click", async ()=>{
-      if(confirm("Delete this group?")){ await deleteDoc(doc(db,"groups",g.id)); loadGroups(); }
+
+    // search handler
+    searchInput.addEventListener("input", ()=> {
+      const q = searchInput.value.trim().toLowerCase();
+      Array.from(tableContainer.querySelectorAll("[data-searchable]")).forEach(el=>{
+        el.style.display = (!q || el.dataset.searchable.toLowerCase().includes(q)) ? "" : "none";
+      });
     });
-    container.appendChild(card);
+
+    // main loader
+    async function loadCollection(collectionName){
+      currentCollection = collectionName;
+      sectionTitle.textContent = collectionName === "ShopApplication" ? "Shop Applications" : capitalize(collectionName);
+      tableContainer.innerHTML = "<div style='padding:10px'>Loading…</div>";
+      try{
+        if(collectionName === "groups"){
+          await renderGroups();
+        } else {
+          const snap = await getDocs(collection(db,collectionName));
+          if(snap.empty){ tableContainer.innerHTML = "<div style='padding:12px'>No data.</div>"; return; }
+          if(collectionName === "ShopApplication"){
+            renderReadOnlyTable(snap);
+          } else {
+            renderEditableTable(snap);
+          }
+        }
+      }catch(e){ console.error(e); tableContainer.innerHTML = "<div style='padding:12px;color:#c0392b'>Error loading data</div>"; }
+    }
+
+    // ---------- Render editable table (users, repairshops) ----------
+    function renderEditableTable(querySnap){
+      const headersSet = new Set();
+      querySnap.forEach(s => Object.keys(s.data()).forEach(k=>headersSet.add(k)));
+      const headers = [...headersSet];
+      // Remove document ID from UI: we'll not show it
+      // Build table
+      const table = document.createElement("table");
+      const thead = document.createElement("thead");
+      const trh = document.createElement("tr");
+      headers.forEach(h => { const th = document.createElement("th"); th.textContent = h; trh.appendChild(th); });
+      const actionTh = document.createElement("th"); actionTh.textContent = "Actions"; trh.appendChild(actionTh);
+      thead.appendChild(trh);
+      table.appendChild(thead);
+
+      const tbody = document.createElement("tbody");
+      querySnap.forEach(docSnap=>{
+        const d = docSnap.data();
+        const tr = document.createElement("tr");
+        tr.dataset.docid = docSnap.id;
+        // prepare searchable string
+        let searchable = "";
+        headers.forEach(h => {
+          const td = document.createElement("td");
+          let val = d[h];
+          if(val && val.seconds) val = fmt(val);
+          else if(typeof val === "string" && val.startsWith("http")) {
+            const a = document.createElement("a"); a.href=val; a.target="_blank"; a.textContent="View"; td.appendChild(a); 
+            searchable += " view ";
+            tr.appendChild(td); return;
+          } else if(typeof val === "object" && Array.isArray(val)){
+            val = val.join(", ");
+          }
+          td.textContent = val ?? "";
+          td.contentEditable = (h === "createdBy" || h === "createdDate") ? "false" : "true";
+          tr.appendChild(td);
+          searchable += " " + (td.textContent || "");
+        });
+        // actions
+        const actions = document.createElement("td");
+        // Reset password if users collection
+        if(currentCollection === "users"){
+          const r = document.createElement("button"); r.className="action-btn resetBtn"; r.textContent="Reset"; r.addEventListener("click", ()=>resetPassword(docSnap.id));
+          actions.appendChild(r);
+        }
+        const edit = document.createElement("button"); edit.className="action-btn editBtn"; edit.textContent="Save";
+        const del = document.createElement("button"); del.className="action-btn deleteBtn"; del.textContent="Delete";
+        actions.appendChild(edit); actions.appendChild(del);
+        edit.addEventListener("click", ()=> inlineSave(tr, headers, docSnap.id));
+        del.addEventListener("click", ()=> inlineDelete(docSnap.id));
+        tr.appendChild(actions);
+
+        tr.dataset.searchable = searchable;
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      tableContainer.innerHTML = "";
+      tableContainer.appendChild(table);
+    }
+
+    // ---------- Render ShopApplication (read-only) ----------
+    function renderReadOnlyTable(querySnap){
+      const headersSet = new Set();
+      querySnap.forEach(s => Object.keys(s.data()).forEach(k=>headersSet.add(k)));
+      const headers = [...headersSet];
+      // table
+      const table = document.createElement("table");
+      const thead = document.createElement("thead");
+      const trh = document.createElement("tr");
+      headers.forEach(h => { const th = document.createElement("th"); th.textContent = h; trh.appendChild(th); });
+      const actionTh = document.createElement("th"); actionTh.textContent = "Actions"; trh.appendChild(actionTh);
+      thead.appendChild(trh);
+      table.appendChild(thead);
+      const tbody = document.createElement("tbody");
+      querySnap.forEach(docSnap=>{
+        const d = docSnap.data();
+        const tr = document.createElement("tr");
+        tr.dataset.docid = docSnap.id;
+        let searchable = "";
+        headers.forEach(h=>{
+          const td = document.createElement("td");
+          let v = d[h];
+          if(v && v.seconds) v = fmt(v);
+          td.textContent = v ?? "";
+          td.contentEditable = "false";
+          tr.appendChild(td);
+          searchable += " " + td.textContent;
+        });
+        const actions = document.createElement("td");
+        const acceptBtn = document.createElement("button"); acceptBtn.className="action-btn acceptBtn"; acceptBtn.textContent="Accept";
+        const rejectBtn = document.createElement("button"); rejectBtn.className="action-btn rejectBtn"; rejectBtn.textContent="Reject";
+        acceptBtn.addEventListener("click", ()=> acceptApplication(docSnap.id));
+        rejectBtn.addEventListener("click", ()=> rejectApplication(docSnap.id));
+        actions.appendChild(acceptBtn); actions.appendChild(rejectBtn);
+        tr.appendChild(actions);
+        tr.dataset.searchable = searchable;
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      tableContainer.innerHTML = "";
+      tableContainer.appendChild(table);
+    }
+
+    // ---------- Render groups (special) ----------
+    async function renderGroups(){
+      // fetch groups
+      const snap = await getDocs(collection(db,"groups"));
+tableContainer.innerHTML = "";
+if (snap.empty) {
+  tableContainer.innerHTML = "<div style='padding:12px'>No groups.</div>";
+  return;
+}
+const container = document.createElement("div");
+
+for (const ds of snap.docs) {
+  const g = ds.data();
+
+  // ✅ Get readable group name (nested group/id/name > name > fname)
+  const groupName =
+    (g.group && g.group.id && g.group.name)
+      ? g.group.name
+      : (g.name || g.fname || "(no name)");
+
+  const card = document.createElement("div");
+  card.className = "group-card";
+
+  // header: group name + leader + createdBy + createdDate
+  const head = document.createElement("div");
+  head.className = "group-head";
+  const left = document.createElement("div");
+
+  const fnameEl = document.createElement("div");
+  fnameEl.innerHTML = `<strong>Group Name: ${groupName}</strong>`;
+
+  const leaderEl = document.createElement("div");
+  leaderEl.innerHTML = `Leader: <span contenteditable="true" data-field="leader">${g.leader ?? ""}</span>`;
+
+  const metaEl = document.createElement("div");
+  metaEl.innerHTML = `Created by: <strong>${g.createdBy ?? ""}</strong> • ${fmt(g.createdDate)}`;
+
+  left.appendChild(fnameEl);
+  left.appendChild(leaderEl);
+  left.appendChild(metaEl);
+
+  const right = document.createElement("div");
+  const saveBtn = document.createElement("button");
+  saveBtn.className = "action-btn saveBtn";
+  saveBtn.textContent = "Save";
+
+  const delBtn = document.createElement("button");
+  delBtn.className = "action-btn deleteBtn";
+  delBtn.textContent = "Delete";
+
+  right.appendChild(saveBtn);
+  right.appendChild(delBtn);
+
+  head.appendChild(left);
+  head.appendChild(right);
+  card.appendChild(head);
+
+  // members collapsible
+  const toggle = document.createElement("button");
+  toggle.textContent = "Members ▾";
+  toggle.style.marginTop = "8px";
+  card.appendChild(toggle);
+
+  const memberBox = document.createElement("div");
+  memberBox.className = "member-list";
+  memberBox.style.display = "none";
+
+  // list members
+  const members = Array.isArray(g.members) ? g.members.slice() : [];
+  for (const m of members) {
+  const user = cachedUsers.find(u => u.id === m);
+  const displayName = user ? (user.fname || user.name || m) : m;
+
+  const row = document.createElement("div");
+  row.className = "member-item";
+
+  const nameSpan = document.createElement("div");
+  nameSpan.textContent = displayName;
+
+  const removeBtn = document.createElement("button");
+  removeBtn.className = "action-btn deleteBtn";
+  removeBtn.textContent = "Remove";
+  removeBtn.addEventListener("click", async () => {
+    if (!confirm(`Remove ${displayName} from group?`)) return;
+    const newMembers = members.filter(x => x !== m);
+    await updateDoc(doc(db, "groups", ds.id), { members: newMembers });
+    await preloadUsers();
+    renderGroups();
   });
-  tableContainer.appendChild(container);
+
+  row.appendChild(nameSpan);
+  row.appendChild(removeBtn);
+  memberBox.appendChild(row);
+  
 }
 
-// ---------------- Sidebar switching ----------------
-document.querySelectorAll(".sidebar button[data-collection]").forEach(btn=>{
-  btn.addEventListener("click", ()=>{
-    document.querySelectorAll(".sidebar button").forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
-    const col = btn.dataset.collection;
-    sectionTitle.textContent = col==="ShopApplication"?"Shop Applications":col==="repairshops"?"Repairshops":capitalize(col);
-    if(col==="users") loadUsers();
-    else if(col==="groups") loadGroups();
-    else loadOtherCollection(col);
-  });
-});
 
-// ---------------- Other Collections ----------------
-async function loadOtherCollection(col){
-  await preloadData();
-  const snap = await getDocs(collection(db,col));
-  tableContainer.innerHTML="";
-  if(snap.empty){ tableContainer.innerHTML="<div style='padding:12px'>No data.</div>"; return; }
-  const table = document.createElement("table");
-  const thead = document.createElement("thead");
-  const trh = document.createElement("tr");
-  const keys = Object.keys(snap.docs[0].data());
-  keys.forEach(k=>{ const th=document.createElement("th"); th.textContent=k; trh.appendChild(th); });
-  const actionTh=document.createElement("th"); actionTh.textContent="Actions"; trh.appendChild(actionTh);
-  thead.appendChild(trh); table.appendChild(thead);
-  const tbody=document.createElement("tbody");
-  snap.forEach(d=>{
-    const docData=d.data();
-    const tr=document.createElement("tr"); tr.dataset.docid=d.id;
-    keys.forEach(k=>{
-      const td=document.createElement("td");
-      if(k.toLowerCase().includes("url")) td.innerHTML = displayValue(docData[k]);
-      else if(k.toLowerCase().includes("time") || k.toLowerCase().includes("timestamp")) td.textContent=humanDate(docData[k]);
-      else if(k==="userID"||k==="createdBy") td.textContent=fnameFromID(docData[k]);
-      else td.textContent=docData[k]??"";
-      td.contentEditable="true"; tr.appendChild(td);
-    });
-    const tdActions=document.createElement("td");
-    const saveBtn=document.createElement("button"); saveBtn.className="action-btn saveBtn"; saveBtn.textContent="Save";
-    const delBtn=document.createElement("button"); delBtn.className="action-btn deleteBtn"; delBtn.textContent="Delete";
-    saveBtn.addEventListener("click", async ()=>{
-      const tds=tr.querySelectorAll("td");
-      const updated={};
-      keys.forEach((k,i)=>{ updated[k]=tds[i].textContent.trim(); });
-      await updateDoc(doc(db,col,d.id),updated);
-      alert("Saved!");
-    });
-    delBtn.addEventListener("click", async ()=>{
-      if(confirm("Delete this item?")){ await deleteDoc(doc(db,col,d.id)); loadOtherCollection(col); }
-    });
-    tdActions.appendChild(saveBtn); tdActions.appendChild(delBtn);
-    tr.appendChild(tdActions); tbody.appendChild(tr);
-  });
-  table.appendChild(tbody); tableContainer.appendChild(table);
+        // Build select dropdown (use user fname)
+const addRow = document.createElement("div");
+addRow.className = "add-member-row";
+const select = document.createElement("select");
+const blankOpt = document.createElement("option");
+blankOpt.textContent = "-- add member --";
+blankOpt.value = "";
+select.appendChild(blankOpt);
+
+// Use fname from users collection if available
+cachedUsers.forEach(u => {
+  const opt = document.createElement("option");
+  opt.value = u.id;
+  opt.textContent = u.fname || u.name || u.id;
+  select.appendChild(opt);
+});
+        const addBtn = document.createElement("button"); addBtn.className="action-btn saveBtn"; addBtn.textContent="Add";
+        addBtn.addEventListener("click", async ()=>{
+          const val = select.value; if(!val) return alert("Pick a user.");
+          if(members.includes(val)) return alert("User already in group.");
+          const newMembers = members.concat([val]);
+          await updateDoc(doc(db,"groups",ds.id), { members: newMembers });
+          await preloadUsers(); renderGroups();
+        });
+        addRow.appendChild(select); addRow.appendChild(addBtn);
+        memberBox.appendChild(addRow);
+
+        card.appendChild(memberBox);
+        // toggle expand
+        toggle.addEventListener("click", ()=> {
+          memberBox.style.display = memberBox.style.display === "none" ? "" : "none";
+        });
+
+        // save leader handler
+        saveBtn.addEventListener("click", async ()=> {
+          const newLeader = head.querySelector(`[data-field="leader"]`).innerText.trim();
+          if(!confirm("Save leader change?")) return;
+          await updateDoc(doc(db,"groups",ds.id), { leader: newLeader });
+          alert("Leader updated.");
+          renderGroups();
+        });
+
+        delBtn.addEventListener("click", async ()=> {
+          if(!confirm("Delete this group?")) return;
+          await deleteAllDocsInCollectionByFilter("groups", ds.id); // simpler: delete doc
+          try{ await deleteDoc(doc(db,"groups",ds.id)); alert("Group deleted"); renderGroups(); }catch(e){ console.error(e); alert("Delete failed"); }
+        });
+
+        container.appendChild(card);
+      }
+      tableContainer.appendChild(container);
+    }
+
+    // --------- Inline save / delete for tables ----------
+    async function inlineSave(tr, headers, docId){
+      if(!confirm("Confirm save changes?")) return;
+      const tds = Array.from(tr.querySelectorAll("td")).slice(0,-1); // all columns except actions
+      const updated = {};
+      for(let i=0;i<headers.length;i++){
+        const key = headers[i], cell = tds[i];
+        if(cell.contentEditable === "true") updated[key] = cell.innerText.trim();
+      }
+      try{
+        await updateDoc(doc(db,currentCollection,docId), updated);
+        alert("Saved.");
+        await preloadUsers();
+        loadCollection(currentCollection);
+      }catch(e){ console.error(e); alert("Save failed."); }
+    }
+
+    async function inlineDelete(docId){
+      if(!confirm("Delete this entry?")) return;
+      try{ await deleteDoc(doc(db,currentCollection,docId)); alert("Deleted."); loadCollection(currentCollection); }catch(e){ console.error(e); alert("Delete failed"); }
+    }
+
+    // -------- Reset password (users) ----------
+    async function resetPassword(userId){
+      const np = prompt("Enter new password for user:");
+      if(!np) return;
+      if(!confirm("Reset password now?")) return;
+      try{ await updateDoc(doc(db,"users",userId), { password: np }); alert("Password reset."); loadCollection("users"); }catch(e){ console.error(e); alert("Reset failed"); }
+    }
+
+   // ----- Accept Application -----
+async function acceptApplication(docId) {
+  if (!confirm("Accept this application?")) return;
+
+  try {
+    const appRef = doc(db, "ShopApplication", docId);
+    const snap = await getDoc(appRef);
+    if (!snap.exists()) {
+      alert("Application not found.");
+      return;
+    }
+
+    const d = snap.data();
+    // map ShopApplication → repairshops
+    const mapped = {
+      BusinessPermitURL: d.BusinessPermitURL || "",
+      address: d.Address || "",
+      contact: d.Contact || "",
+      imagePath: d.ShopImageURL || "",
+      latitude: d.latitude || null,
+      longitude: d.longitude || null,
+      name: d.ShopName || "",
+      ownerName: d.FullName || "",
+      timestamp: new Date(),
+      type: d.Services || "",
+      updatedAt: new Date(),
+    };
+
+    // write to repairshops
+    await setDoc(doc(db, "repairshops", docId), mapped);
+    // delete from ShopApplication
+    await deleteDoc(appRef);
+
+    alert("Application accepted and moved to repairshops!");
+    loadCollection("ShopApplication");
+  } catch (e) {
+    console.error(e);
+    alert("Error accepting application.");
+  }
 }
 
-// ---------------- Search ----------------
-searchInput.addEventListener("input", ()=>{
-  const filter=searchInput.value.toLowerCase();
-  const cards=tableContainer.querySelectorAll(".group-card");
-  cards.forEach(c=>{ c.style.display=c.textContent.toLowerCase().includes(filter)?"block":"none"; });
-});
+// ----- Reject Application -----
+async function rejectApplication(docId) {
+  const reason = prompt("Enter reason for rejection:");
+  if (reason === null) return;
+  if (!confirm("Reject this application?")) return;
 
-// Initial load
-loadUsers();
-function capitalize(s){return s.charAt(0).toUpperCase()+s.slice(1);}
-</script>
-</body>
-</html>
+  try {
+    const appRef = doc(db, "ShopApplication", docId);
+    const snap = await getDoc(appRef);
+    if (!snap.exists()) {
+      alert("Application not found.");
+      return;
+    }
+
+    // (optional) could log or email reason here
+
+    await deleteDoc(appRef);
+    alert("Application rejected and deleted!");
+    loadCollection("ShopApplication");
+  } catch (e) {
+    console.error(e);
+    alert("Error rejecting application.");
+  }
+}
+
+    // ---------- send email via cloud function ----------
+    async function sendEmailViaCloud(body){
+      if(!CLOUD_FN_SEND_EMAIL_URL || CLOUD_FN_SEND_EMAIL_URL.includes("<YOUR")) {
+        alert("Email function URL not configured. Place Cloud Function URL in config.");
+        return;
+      }
+      try{
+        const res = await fetch(CLOUD_FN_SEND_EMAIL_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type":"application/json",
+            ...(FUNCTION_KEY ? { "FUNCTION_KEY": FUNCTION_KEY } : {})
+          },
+          body: JSON.stringify(body)
+        });
+        if(!res.ok) {
+          const text = await res.text();
+          console.error("Cloud function error", text);
+          alert("Cloud function email error. See console.");
+        }
+      }catch(e){ console.error(e); alert("Failed to call email function."); }
+    }
+
+    // ---------- Backup (exclude admin) ----------
+    document.getElementById("backupBtn").addEventListener("click", async ()=>{
+      if(!confirm("Export all collections (except admin) to JSON?")) return;
+      try{
+        const out = {};
+        for(const col of collectionsList){
+          if(col === "admin") continue;
+          const snap = await getDocs(collection(db,col));
+          out[col] = [];
+          snap.forEach(s => out[col].push({ id: s.id, data: s.data() }));
+        }
+        const blob = new Blob([JSON.stringify(out, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a"); a.href = url; a.download = `firestore-backup-${new Date().toISOString()}.json`; a.click();
+        URL.revokeObjectURL(url);
+      }catch(e){ console.error(e); alert("Backup failed."); }
+    });
+
+    // ---------- Restore (requires admin password confirm) ----------
+    document.getElementById("restoreBtn").addEventListener("click", ()=> restoreFileInput.click());
+    restoreFileInput.addEventListener("change", async (ev)=>{
+      const file = ev.target.files[0];
+      if(!file) return;
+      if(!confirm("This will DELETE all non-admin collections and restore from file. Continue?")) return;
+      const pwd = prompt("Enter admin password to authorize restore:");
+      if(!pwd) return alert("Restore cancelled (no password).");
+      // verify admin password
+      const adminRef = doc(db,"admin","admin"), adminSnap = await getDoc(adminRef);
+      if(!adminSnap.exists() || adminSnap.data().password !== pwd){ return alert("Admin password incorrect. Restore aborted."); }
+      try{
+        const text = await file.text();
+        const json = JSON.parse(text);
+        // delete all docs in non-admin collections
+        for(const col of collectionsList){
+          if(col === "admin") continue;
+          // delete all docs
+          const snap = await getDocs(collection(db,col));
+          for(const d of snap.docs) await deleteDoc(doc(db,col,d.id));
+        }
+        // restore from json
+        for(const col of Object.keys(json)){
+          if(col === "admin") continue;
+          const arr = json[col] || [];
+          for(const item of arr){
+            // write with same id if present
+            if(item && item.id) {
+              await setDoc(doc(db,col,item.id), item.data);
+            } else {
+              await addDoc(collection(db,col), item.data);
+            }
+          }
+        }
+        alert("Restore complete.");
+        await preloadUsers();
+        loadCollection(currentCollection);
+      }catch(e){ console.error(e); alert("Restore failed."); }
+    });
+
+    // ---------- helpers ----------
+    function capitalize(s){ return s && s.charAt(0).toUpperCase()+s.slice(1) }
+    function createModal(){ const root = document.getElementById("modalRoot"); root.innerHTML = ""; root.style.display="flex"; const wrapper = document.createElement("div"); wrapper.className="modal-backdrop"; wrapper.addEventListener("click", (e)=>{ if(e.target === wrapper){ closeModal(); }}); const inner = document.createElement("div"); inner.id="modalInner"; wrapper.appendChild(inner); root.appendChild(wrapper); return inner; }
+    function showModal(contentEl){ const root = document.getElementById("modalRoot"); root.style.display="flex"; root.innerHTML = ""; const wrapper = document.createElement("div"); wrapper.className="modal-backdrop"; wrapper.addEventListener("click", (e)=>{ if(e.target === wrapper){ closeModal(); }}); wrapper.appendChild(contentEl); root.appendChild(wrapper); }
+    function closeModal(){ document.getElementById("modalRoot").style.display="none"; document.getElementById("modalRoot").innerHTML=""; }
+
+    // delete helper for groups delete fallback (not necessary but kept)
+    async function deleteAllDocsInCollectionByFilter(col, _id){ /* fallback placeholder */ }
+
+    // initial preload users (when page loads)
+    // preloadUsers runs on login; still, call once to keep cachedUsers current
+    (async ()=>{ try{ await preloadUsers(); }catch(e){} })();
+  </script>
+
+
+</body></html>
